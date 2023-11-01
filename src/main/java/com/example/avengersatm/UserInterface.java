@@ -44,7 +44,6 @@ public class UserInterface {
         grid.setVgap(10);
         grid.setPadding(new Insets(25, 25, 25, 25));
 
-        // UI elements
         Label cardNumberLabel = new Label("Enter Card Number:");
         TextField cardNumberField = new TextField();
         Label pinLabel = new Label("Enter PIN:");
@@ -74,7 +73,7 @@ public class UserInterface {
             }
         });
 
-        return new Scene(grid, 500, 300);  // You can adjust the width and height as needed
+        return new Scene(grid, 500, 300);
     }
 
     private Scene createMainMenuScene(Stage stage) {

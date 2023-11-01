@@ -47,7 +47,6 @@ public class ATM {
             errorAlert.showAndWait();
             return;
         }
-
         // Let user choose which account to withdraw from
         List<String> choices = currentCustomer.getAccounts().stream()
                 .map(account -> "Account Number: " + account.getAccountNumber() + " - Balance: $" + account.getBalance())
@@ -62,7 +61,6 @@ public class ATM {
         if (!accountResult.isPresent()) {
             return;  // User cancelled the operation
         }
-
         // Find the selected account
         String selectedDetail = accountResult.get();
         Account selectedAccount = currentCustomer.getAccounts().stream()

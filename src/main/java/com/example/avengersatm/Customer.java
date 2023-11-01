@@ -31,11 +31,6 @@ public class Customer implements Serializable {
         return debitCard;
     }
 
-    @Override
-    public String toString() {
-        return "Customer [id=" + id + ", name=" + name + ", accounts=" + accounts + "]";
-    }
-
     public void addAccount(Account account) {
         this.accounts.add(account);
     }
