@@ -96,7 +96,63 @@ public class ATM {
         }
     }
 
+    public void performQuickWithdrawFX(Customer currentCustomer){
+        if (currentCustomer.getAccounts().isEmpty()) {
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setContentText("No accounts available for the customer.");
+            errorAlert.showAndWait();
+            return;
+        }
+        // Let user choose which account to withdraw from
+        List<String> choices = currentCustomer.getAccounts().stream()
+                .map(account -> "Account Number: " + account.getAccountNumber() + " - Balance: $" + account.getBalance())
+                .collect(Collectors.toList());
 
+        ChoiceDialog<String> accountChoiceDialog = new ChoiceDialog<>(choices.get(0), choices);
+        accountChoiceDialog.setTitle("Select Account");
+        accountChoiceDialog.setHeaderText("Choose an account to withdraw from:");
+
+        Optional<String> accountResult = accountChoiceDialog.showAndWait();
+
+        if (!accountResult.isPresent()) {
+            return;  // User cancelled the operation
+        }
+        // Find the selected account
+        String selectedDetail = accountResult.get();
+        Account selectedAccount = currentCustomer.getAccounts().stream()
+                .filter(account -> selectedDetail.contains(account.getAccountNumber()))
+                .findFirst()
+                .orElse(null);
+
+        if (selectedAccount == null) {
+            return;  // Shouldn't happen but just in case
+        }
+
+        // Use TextInputDialog for getting withdrawal amount
+        TextInputDialog dialog = new TextInputDialog("0");
+        dialog.setTitle("Withdrawal");
+        dialog.setHeaderText("Enter amount to withdraw:");
+        Optional<String> result = dialog.showAndWait();
+
+        if (result.isPresent()) {
+            double amount = Double.parseDouble(result.get());
+
+            // Check if there's enough balance to withdraw
+            if (selectedAccount.getBalance() >= amount) {
+                selectedAccount.withdraw(amount);
+
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setContentText("Successfully withdrew $" + amount + " from account " + selectedAccount.getAccountNumber() + ". New Balance: $" + selectedAccount.getBalance());
+                alert.showAndWait();
+            } else {
+                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                errorAlert.setContentText("Insufficient funds in account " + selectedAccount.getAccountNumber());
+                errorAlert.showAndWait();
+            }
+        }
+        BankDataManager.getInstance().saveBankDataToFile(bank);
+
+    }
 
     public void performDepositFX(Customer currentCustomer) {
         if (currentCustomer.getAccounts().isEmpty()) {

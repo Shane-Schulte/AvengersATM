@@ -80,14 +80,20 @@ public class UserInterface {
         VBox vbox = new VBox(10);
         vbox.setAlignment(Pos.CENTER);
 
+        Button quickWithdrawBtn =  new Button("Quick Withdraw");
         Button viewBalanceBtn = new Button("View Balance");
         Button withdrawBtn = new Button("Withdraw");
         Button depositBtn = new Button("Deposit");
         Button transferBtn = new Button("Transfer");
         Button logoutBtn = new Button("Logout");
 
-        vbox.getChildren().addAll(viewBalanceBtn, withdrawBtn, depositBtn, transferBtn, logoutBtn);
+        vbox.getChildren().addAll(quickWithdrawBtn, withdrawBtn, depositBtn, transferBtn, logoutBtn);
 
+        quickWithdrawBtn.setOnAction(e -> {
+            atm.performQuickWithdrawFX(currentCustomer);
+            BankDataManager.getInstance().saveBankDataToFile(bank);
+            stage.setScene(createLoginScene(stage));
+        });
         viewBalanceBtn.setOnAction(e -> {
             atm.viewAccountBalanceFX(currentCustomer);
         });
@@ -101,10 +107,8 @@ public class UserInterface {
             atm.performTransferFX(currentCustomer);
         });
         logoutBtn.setOnAction(e -> {
-            System.out.println("Attempting to save bank data");
             BankDataManager.getInstance().saveBankDataToFile(bank);
-            System.out.println("Bank data saved");
-            System.exit(0);
+            stage.setScene(createLoginScene(stage));
         });
 
         return new Scene(vbox, 500, 300);
